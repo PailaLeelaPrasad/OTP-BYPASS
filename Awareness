@@ -1,0 +1,30 @@
+Hello everyone. In this post, I will explain how I bypassed OTP verification in a govt website. This post is completely beginner friendly and you just need to have basic knowledge of intercepting requests using Burp Suite.
+
+DISCLAIMER: This is for educational purpose only. Please don’t use it to exploit or harm anyone. If you find any bug using the provided information, report it ethically to the concerned authorities.
+
+So, I visited this website xyz.com, entered my own number and hit enter. Intentionally, I entered the wrong otp and intercepted the request using Burp suite.
+
+Image: https://miro.medium.com/v2/resize:fit:1400/format:webp/1*_FU_LVUFDW6p4drI0m-N9w.png
+
+In response, I got message ,
+
+{“message”:”OTP didn’t match!”,”code”:400,”success”:0} .
+
+I did this lame approach of just editing the values which sometimes works in websites which don’t perform integrity checks. So, I edited this to
+
+{“message”:”OTP match!”,”code”:200,”success”:1}
+
+This didn’t work and I kept on thinking what should I do next. Then I thought. lets provide the valid OTP and see what is being returned. So once again, I entered my number, repeated the above steps but this time with a valid OTP. Once OTP was verified, the server responded with a token and a redirect link.
+
+{“data”:
+{“nextLink”:”set_password”,”token”:”drc6GpqryeAMIR2qngxLLt2TESTUeZWSamplewx
+ZhDgs=”},”message”:”OTP successfully
+verified!”,”code”:200,”token”:”drc6GpqryeAMIR2qngxLLt2TESTUeZWSamplewx
+ZhDgs=
+“,”nextLink”:”set_password”,”success”:1}
+
+Obviously, this is just a sample token and not the original one. I sent this token to decoder in order to find out what was stored in this token. Decoded it in base64 and found that some random info is being stored in this token which doesn’t distinguishes between different users. Once again, I entered another number, provided wrong otp and intercepted the request. As expected, I got 400 response but this time I replaced the response with a similar response that I got after providing valid OTP. Then I forwarded the request and OTP was succesfully bypassed. This bug was in a govt website, so without further exploitation, I reported it to NCIIPC.
+
+I hope you enjoyed reading this. It is my first writeup and will surely try to come up with more.
+
+Thanks.
